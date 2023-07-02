@@ -12,7 +12,7 @@ class BluetootSPP : public BluetoothSerial {
     String id = String((uint16_t)(chipid >> 32), HEX);
     id.toUpperCase();
     begin("ROS-" + id);
-    //Serial.println("Started, can pair it with bluetooth!");
+    Serial.println(String("Started, can pair it with address ")+getBtAddressString());
   }
   void setBaud(int b = 115200) {}  // dummy function
   unsigned long time() { return millis(); }
