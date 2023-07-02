@@ -1,28 +1,21 @@
-#define ROSSERIAL_HPP
-#define USE_TEENSY_HW_SERIAL
-
 #include <Arduino.h>
-#include "AdvServo.h"
-#include "Util.h"
 #include <Servo.h>
 #include <open_quadruped/JointAngles.h>
 
-using namespace std;
+#include "AdvServo.h"
+#include "Util.h"
 
-String serialResponse = "";
 bool ESTOPPED = false;
-int max_speed = 500; // deg / sec
+int max_speed = 500;  // deg / sec
 
 #include "rosserial.h"
 ros::MyNodeHandle nh;
 
 AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
-AdvServo * hips[4] = {&FL_Hip, &FR_Hip, &BL_Hip, &BR_Hip};
-AdvServo * shoulders[4] = {&FL_Shoulder, &FR_Shoulder, &BL_Shoulder, &BR_Shoulder};
-AdvServo * wrists[4] = {&FL_Wrist, &FR_Wrist, &BL_Wrist, &BR_Wrist};
-//FootSensor FL_sensor, FR_sensor, BL_sensor, BR_sensor;
+AdvServo* hips[4] = {&FL_Hip, &FR_Hip, &BL_Hip, &BR_Hip};
+AdvServo* shoulders[4] = {&FL_Shoulder, &FR_Shoulder, &BL_Shoulder, &BR_Shoulder};
+AdvServo* wrists[4] = {&FL_Wrist, &FR_Wrist, &BL_Wrist, &BR_Wrist};
 Util util;
-//InverseKinematics ik;
 
 void detach_servos() {
   // HIPS
@@ -44,7 +37,7 @@ void detach_servos() {
   BL_Wrist.detach();
 }
 
-void update_servos(){
+void update_servos() {
   // HIPS
   FL_Hip.update_clk();
   FR_Hip.update_clk();
@@ -64,13 +57,6 @@ void update_servos(){
   BL_Wrist.update_clk();
 }
 
-// void update_sensors() {
-//   FL_sensor.update_clk();
-//   FR_sensor.update_clk();
-//   BL_sensor.update_clk();
-//   BR_sensor.update_clk();
-// }
-
 void setLegJointIDS() {
   // HIPS
   FL_Hip.setType(0, 0);
@@ -78,26 +64,25 @@ void setLegJointIDS() {
   BL_Hip.setType(2, 0);
   BR_Hip.setType(3, 0);
 
-  //SHOULDERS
+  // SHOULDERS
   FL_Shoulder.setType(0, 1);
   FR_Shoulder.setType(1, 1);
   BL_Shoulder.setType(2, 1);
   BR_Shoulder.setType(3, 1);
 
-  //WRISTS
+  // WRISTS
   FL_Wrist.setType(0, 2);
   FR_Wrist.setType(1, 2);
   BL_Wrist.setType(2, 2);
   BR_Wrist.setType(3, 2);
-
 }
 
-void callback( const open_quadruped::JointAngles& joint_angles){
+void callback(const open_quadruped::JointAngles& joint_angles) {
   float ja_h;
   float ja_s;
   float ja_w;
   Serial.println("Data Received: ");
-  for(int leg = 0; leg < 4; leg++) {
+  for (int leg = 0; leg < 4; leg++) {
     if (leg == 0) {
       ja_h = joint_angles.fl[0];
       ja_s = joint_angles.fl[1];
@@ -142,55 +127,47 @@ void callback( const open_quadruped::JointAngles& joint_angles){
   }
 }
 
-
 ros::Subscriber<open_quadruped::JointAngles> sub("joint_angles", &callback);
 
 void setup() {
-  // Serial1.begin(57600);
-  Serial.begin(500000);
+  Serial.begin(115200);
 
   // HIPS
-  FL_Hip.init(4, 135, 0);
-  FR_Hip.init(11, 135, 0);
-  BL_Hip.init(7, 135, 0);
-  BR_Hip.init(8, 135, 0);
+  FL_Hip.init(15, 135, 0);
+  FR_Hip.init(12, 135, 0);
+  BL_Hip.init(5, 135, 0);
+  BR_Hip.init(25, 135, 0);
 
-  //SHOULDERS
+  // SHOULDERS
   FL_Shoulder.init(2, 180, 0);
-  FR_Shoulder.init(13, 90, 0);
-  BL_Shoulder.init(5, 180, 0); // +
-  BR_Shoulder.init(10, 90, 0); // -
+  FR_Shoulder.init(14, 90, 0);
+  BL_Shoulder.init(18, 180, 0);  // +
+  BR_Shoulder.init(33, 90, 0);   // -
 
-  //WRISTS
-  FL_Wrist.init(3, 0, 0);
-  FR_Wrist.init(12, 270, 0);
-  BL_Wrist.init(6, 0, 0);
-  BR_Wrist.init(9, 270, 0);
-// #ifdef ESP32
-//   FL_sensor.init(1, 17);
-//   FR_sensor.init(2, 16);
-//   BL_sensor.init(3, 15);
-//   BR_sensor.init(4, 14); 
-// #else 
-//   FL_sensor.init(A9, 17);
-//   FR_sensor.init(A8, 16);
-//   BL_sensor.init(A7, 15);
-//   BR_sensor.init(A6, 14); 
-// #endif
+  // WRISTS
+  FL_Wrist.init(4, 0, 0);
+  FR_Wrist.init(27, 270, 0);
+  BL_Wrist.init(19, 0, 0);
+  BR_Wrist.init(32, 270, 0);
+
   setLegJointIDS();
 
   delay(1000);
 
+  Serial.println(F("ROSserial init, wait..."));
   nh.initNode();
+  nh.loginfo("<init>");
   nh.subscribe(sub);
+  nh.negotiateTopics();
+  nh.loginfo("<started>");
+  Serial.println(F("ROSserial init, done!"));
 }
 
 void loop() {
   nh.spinOnce();
-  if(!ESTOPPED){
+  if (!ESTOPPED) {
     update_servos();
   } else {
     detach_servos();
   }
-  //update_sensors();
 }
