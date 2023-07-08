@@ -17,6 +17,26 @@ AdvServo* shoulders[4] = {&FL_Shoulder, &FR_Shoulder, &BL_Shoulder, &BR_Shoulder
 AdvServo* wrists[4] = {&FL_Wrist, &FR_Wrist, &BL_Wrist, &BR_Wrist};
 Util util;
 
+void init_servos() {
+  // HIPS
+  FL_Hip.init(15, 135, 0);
+  FR_Hip.init(12, 135, 0);
+  BL_Hip.init(5, 135, 0);
+  BR_Hip.init(25, 135, 0);
+
+  // SHOULDERS
+  FL_Shoulder.init(2, 180, 0);
+  FR_Shoulder.init(14, 90, 0);
+  BL_Shoulder.init(18, 180, 0);  // +
+  BR_Shoulder.init(33, 90, 0);   // -
+
+  // WRISTS
+  FL_Wrist.init(4, 0, 0);
+  FR_Wrist.init(27, 270, 0);
+  BL_Wrist.init(19, 0, 0);
+  BR_Wrist.init(32, 270, 0);
+}
+
 void detach_servos() {
   // HIPS
   FL_Hip.detach();
@@ -132,28 +152,11 @@ ros::Subscriber<open_quadruped::JointAngles> sub("joint_angles", &callback);
 void setup() {
   Serial.begin(115200);
 
-  // HIPS
-  FL_Hip.init(15, 135, 0);
-  FR_Hip.init(12, 135, 0);
-  BL_Hip.init(5, 135, 0);
-  BR_Hip.init(25, 135, 0);
-
-  // SHOULDERS
-  FL_Shoulder.init(2, 180, 0);
-  FR_Shoulder.init(14, 90, 0);
-  BL_Shoulder.init(18, 180, 0);  // +
-  BR_Shoulder.init(33, 90, 0);   // -
-
-  // WRISTS
-  FL_Wrist.init(4, 0, 0);
-  FR_Wrist.init(27, 270, 0);
-  BL_Wrist.init(19, 0, 0);
-  BR_Wrist.init(32, 270, 0);
-
+  Serial.println(F("Servos init, wait..."));
+  init_servos();
   setLegJointIDS();
-
-  delay(1000);
-
+  Serial.println(F("Servos init, done!"));  
+  //
   Serial.println(F("ROSserial init, wait..."));
   nh.initNode();
   nh.loginfo("<init>");

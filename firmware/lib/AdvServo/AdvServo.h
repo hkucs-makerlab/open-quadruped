@@ -1,8 +1,7 @@
 #include <Servo.h>
 
-class AdvServo {
+class AdvServo : public Servo {
   private:
-  Servo servo;
   double last_actuated;
   double error_threshold = 0.5;
   int control_range = 270;
@@ -20,5 +19,4 @@ class AdvServo {
   void setPosition(double tempPos, double tempSpeed);
   int getPosition();
   void update_clk();
-  void detach();
 };

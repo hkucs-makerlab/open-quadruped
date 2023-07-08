@@ -3,11 +3,10 @@
 #include <Servo.h>
 
 void AdvServo::init(int servo_pin, double starting_angle, double tempOffset) {
-  servo.attach(servo_pin, 500, 2500);
+  attach(servo_pin);
   off = tempOffset;
   pos = starting_angle + off;
-  servo.write((starting_angle + off) * 180 / control_range);
-  delay(1000);
+  write((starting_angle + off) * 180 / control_range);
   last_actuated = millis();
 }
 
@@ -46,12 +45,10 @@ void AdvServo::update_clk() {
         dir = -1;
       }
       pos += dir * wait_time / 1000 * spd;
-      servo.write(pos * 180 / control_range);
+      write(pos * 180 / control_range);
       last_actuated = millis();
     }
   }
 }
 
-void AdvServo::detach() {
-  servo.detach();
-}
+
