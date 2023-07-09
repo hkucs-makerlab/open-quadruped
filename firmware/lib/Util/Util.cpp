@@ -29,7 +29,7 @@ double Util::angleConversion(int leg, int joint, double angle) {
     if(leg == 0 || leg == 1) {
       angle = -angle;
     }
-    angle = angle + 135;
+    angle = angle + 90;
   }
 
   if(joint == 1) {
@@ -37,7 +37,7 @@ double Util::angleConversion(int leg, int joint, double angle) {
       angle = 90 + angle;
     }
     if(leg == 1 || leg == 3) {
-      angle = 180 - angle;
+      angle = 135 - angle;
     }
   }
 
@@ -47,7 +47,7 @@ double Util::angleConversion(int leg, int joint, double angle) {
       angle = angle - weird_offset;
     }
     if(leg == 1 || leg == 3) {
-      angle = (270 + weird_offset) - angle;
+      angle = (180 + weird_offset) - angle;
     }
   }
   return angle;
@@ -56,10 +56,10 @@ double Util::angleConversion(int leg, int joint, double angle) {
 int Util::inverse_angleConversion(int leg, int joint, double angle) {
   if(joint == 0){
     if (leg == 0 || leg == 1) {
-      angle = 135 - angle;
+      angle = 90 - angle;
     }
     if (leg == 2 || leg == 3) {
-      angle = angle - 135;
+      angle = angle - 90;
     }
   }
 
@@ -68,7 +68,7 @@ int Util::inverse_angleConversion(int leg, int joint, double angle) {
       angle = angle - 90;
     }
     if(leg == 1 || leg == 3) {
-      angle = 180 - angle;
+      angle = 135 - angle;
     }
   }
 
@@ -78,7 +78,7 @@ int Util::inverse_angleConversion(int leg, int joint, double angle) {
       angle = weird_offset + angle;
     }
     if(leg == 1 || leg == 3) {
-      angle = (270 + weird_offset) - angle;
+      angle = (180 + weird_offset) - angle;
     }
   }
   return angle;

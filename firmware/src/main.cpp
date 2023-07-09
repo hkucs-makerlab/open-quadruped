@@ -17,24 +17,46 @@ AdvServo* shoulders[4] = {&FL_Shoulder, &FR_Shoulder, &BL_Shoulder, &BR_Shoulder
 AdvServo* wrists[4] = {&FL_Wrist, &FR_Wrist, &BL_Wrist, &BR_Wrist};
 Util util;
 
-void init_servos() {
+void setLegJointIDS() {
   // HIPS
-  FL_Hip.init(15, 135, 0);
-  FR_Hip.init(12, 135, 0);
-  BL_Hip.init(5, 135, 0);
-  BR_Hip.init(25, 135, 0);
+  FL_Hip.setType(0, 0);
+  FR_Hip.setType(1, 0);
+  BL_Hip.setType(2, 0);
+  BR_Hip.setType(3, 0);
 
   // SHOULDERS
-  FL_Shoulder.init(2, 180, 0);
-  FR_Shoulder.init(14, 90, 0);
-  BL_Shoulder.init(18, 180, 0);  // +
-  BR_Shoulder.init(33, 90, 0);   // -
+  FL_Shoulder.setType(0, 1);
+  FR_Shoulder.setType(1, 1);
+  BL_Shoulder.setType(2, 1);
+  BR_Shoulder.setType(3, 1);
+
+  // WRISTS
+  FL_Wrist.setType(0, 2);
+  FR_Wrist.setType(1, 2);
+  BL_Wrist.setType(2, 2);
+  BR_Wrist.setType(3, 2);
+}
+
+void init_servos() {
+  // HIPS
+  FL_Hip.init(15, 90, 0);
+  FR_Hip.init(12, 90, 0);
+  BL_Hip.init(5, 90, 0);
+  BR_Hip.init(25, 90, 0);
+
+  // SHOULDERS
+  FL_Shoulder.init(2, 135, 0);
+  FR_Shoulder.init(14, 45, 0);
+  BL_Shoulder.init(18, 135, 0);  // +
+  BR_Shoulder.init(33, 45, 0);   // -
 
   // WRISTS
   FL_Wrist.init(4, 0, 0);
-  FR_Wrist.init(27, 270, 0);
+  FR_Wrist.init(27, 180, 0);
   BL_Wrist.init(19, 0, 0);
-  BR_Wrist.init(32, 270, 0);
+  BR_Wrist.init(32, 180, 0);
+  //
+  setLegJointIDS();
 }
 
 void detach_servos() {
@@ -75,26 +97,6 @@ void update_servos() {
   FR_Wrist.update_clk();
   BR_Wrist.update_clk();
   BL_Wrist.update_clk();
-}
-
-void setLegJointIDS() {
-  // HIPS
-  FL_Hip.setType(0, 0);
-  FR_Hip.setType(1, 0);
-  BL_Hip.setType(2, 0);
-  BR_Hip.setType(3, 0);
-
-  // SHOULDERS
-  FL_Shoulder.setType(0, 1);
-  FR_Shoulder.setType(1, 1);
-  BL_Shoulder.setType(2, 1);
-  BR_Shoulder.setType(3, 1);
-
-  // WRISTS
-  FL_Wrist.setType(0, 2);
-  FR_Wrist.setType(1, 2);
-  BL_Wrist.setType(2, 2);
-  BR_Wrist.setType(3, 2);
 }
 
 void callback(const open_quadruped::JointAngles& joint_angles) {
@@ -154,8 +156,7 @@ void setup() {
 
   Serial.println(F("Servos init, wait..."));
   init_servos();
-  setLegJointIDS();
-  Serial.println(F("Servos init, done!"));  
+  Serial.println(F("Servos init, done!"));
   //
   Serial.println(F("ROSserial init, wait..."));
   nh.initNode();

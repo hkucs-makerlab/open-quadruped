@@ -4,7 +4,7 @@ class AdvServo : public Servo {
   private:
   double last_actuated;
   double error_threshold = 0.5;
-  int control_range = 270;
+  int control_range = 180;
   double wait_time = 1;
 
   public:
