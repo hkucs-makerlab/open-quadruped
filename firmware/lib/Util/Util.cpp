@@ -1,13 +1,13 @@
 #include "Util.h"
-#include <Arduino.h>
+
 
 void Util::upper(char* s) {
-  for(int i = 0; i < strlen(s); i++){
+  for(unsigned int i = 0; i < strlen(s); i++){
     s[i] = toupper(s[i]);
   }
 }
 
-double Util::max(double a0, double a1, double a2) {
+double Util::maximum(double a0, double a1, double a2) {
   if(a0 >= a1 && a0 >= a2) {
     return a0;
   }

@@ -1,7 +1,10 @@
 #pragma once
 
 #include <ros/node_handle.h>
+#include "config.h"
 
+// ----------------------------------------------------------------------
+#ifdef ESP32
 #include <BluetoothSerial.h>
 
 namespace ros {
@@ -12,7 +15,7 @@ class BluetootSPP : public BluetoothSerial {
     String id = String((uint16_t)(chipid >> 32), HEX);
     id.toUpperCase();
     begin("ROS-" + id);
-    Serial.println(String("Started, can pair it with address ")+getBtAddressString());
+    Serial.println(String("Started, can pair it with address ") + getBtAddressString());
   }
   void setBaud(int b = 115200) {}  // dummy function
   unsigned long time() { return millis(); }
@@ -52,6 +55,39 @@ typedef NodeHandle_<BluetootSPP, 5, 5, 512, 512> MyNodeHandle;
 #else
 typedef NodeHandle_<Serial2Hardware, 5, 5, 512, 512> MyNodeHandle;
 #endif
-
-
 }  // namespace ros
+#endif // ESP32
+
+// ----------------------------------------------------------------------
+#ifdef AVR
+#include <SoftwareSerial.h>
+#define SERIAL_CLASS SoftwareSerial
+namespace ros {
+class ArduinoSoftSerial {
+ public:
+  ArduinoSoftSerial() : iostream(SERIAL_CLASS(BT_RX_PIN, BT_TX_PIN)) {
+    baud_ = 38400;
+  }
+  void init() {
+    iostream.begin(baud_);
+  }
+  int read() { return iostream.read(); };
+  void write(uint8_t* data, int length) {
+    for (int i = 0; i < length; i++) {
+      iostream.write(data[i]);
+    }
+  }
+  void setBaud(long baud) {
+    baud_ = baud;
+  }
+  unsigned long time() { return millis(); }
+
+ protected:
+  SERIAL_CLASS iostream;
+  long baud_{38400};
+};
+
+typedef NodeHandle_<ArduinoSoftSerial, 3, 3, 96, 96> MyNodeHandle;
+}  // namespace ros
+
+#endif //AVR

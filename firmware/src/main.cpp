@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include <open_quadruped/JointAngles.h>
-
+#include "config.h"
 #include "AdvServo.h"
 #include "Util.h"
 
@@ -39,22 +39,22 @@ void setLegJointIDS() {
 
 void init_servos() {
   // HIPS
-  FL_Hip.init(15, 90, 0);
-  FR_Hip.init(12, 90, 0);
-  BL_Hip.init(5, 90, 0);
-  BR_Hip.init(25, 90, 0);
+  FL_Hip.init(FL_Hip_PIN, 90, 0);
+  FR_Hip.init(FR_Hip_PIN, 90, 0);
+  BL_Hip.init(BL_Hip_PIN, 90, 0);
+  BR_Hip.init(BR_Hip_PIN, 90, 0);
 
   // SHOULDERS
-  FL_Shoulder.init(2, 135, 0);
-  FR_Shoulder.init(14, 45, 0);
-  BL_Shoulder.init(18, 135, 0);  // +
-  BR_Shoulder.init(33, 45, 0);   // -
+  FL_Shoulder.init(FL_Shoulder_PIN, 135, 0);
+  FR_Shoulder.init(FR_Shoulder_PIN, 45, 0);
+  BL_Shoulder.init(BL_Shoulder_PIN, 135, 0);  // +
+  BR_Shoulder.init(BR_Shoulder_PIN, 45, 0);   // -
 
   // WRISTS
-  FL_Wrist.init(4, 0, 0);
-  FR_Wrist.init(27, 180, 0);
-  BL_Wrist.init(19, 0, 0);
-  BR_Wrist.init(32, 180, 0);
+  FL_Wrist.init(FL_Wrist_PIN, 0, 0);
+  FR_Wrist.init(FR_Wrist_PIN, 180, 0);
+  BL_Wrist.init(BL_Wrist_PIN, 0, 0);
+  BR_Wrist.init(BR_Wrist_PIN, 180, 0);
   //
   setLegJointIDS();
 }
@@ -137,7 +137,7 @@ void callback(const open_quadruped::JointAngles& joint_angles) {
     double s_dist = abs(shoulder_angle - (*shoulders[leg]).getPosition());
     double w_dist = abs(wrist_angle - (*wrists[leg]).getPosition());
 
-    double scaling_factor = util.max(h_dist, s_dist, w_dist);
+    double scaling_factor = util.maximum(h_dist, s_dist, w_dist);
 
     h_dist /= scaling_factor;
     s_dist /= scaling_factor;
