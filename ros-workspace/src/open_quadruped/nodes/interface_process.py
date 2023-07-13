@@ -52,7 +52,7 @@ if __name__=='__main__':
 
                 # use joystick values + limits to figure out desired euler angle representation
                 yaw = axes[2] * yaw_limit
-                pitch = axes[5] * pitch_limit
+                pitch = axes[4] * pitch_limit
                 roll = axes[0] * roll_limit
 
                 # use the body IK model to figure out the hip-to-foot vectors needed for the desired pose
