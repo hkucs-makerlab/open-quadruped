@@ -18,6 +18,8 @@
 #define BR_Hip_PIN 25
 #define BR_Shoulder_PIN 33
 #define BR_Wrist_PIN 32
+
+#define BUZZER_PIN 23
 #endif  // ESP32
 
 // ---------------------------------------------------------------
@@ -38,8 +40,10 @@
 #define BL_Shoulder_PIN 11
 #define BL_Wrist_PIN 7
 
-#define BT_RX_PIN 13
-#define BT_TX_PIN 12
+#define BUZZER_PIN A0
+
+#define BT_RX_PIN A1
+#define BT_TX_PIN A2
 #endif  // AVR
 
 
