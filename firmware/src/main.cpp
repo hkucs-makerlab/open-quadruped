@@ -1,15 +1,17 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include <open_quadruped/JointAngles.h>
-#include "config.h"
-#include "AdvServo.h"
-#include "Util.h"
 
-bool ESTOPPED = false;
-int max_speed = 500;  // deg / sec
+#include "AdvServo.h"
+#include "Buzzer.hpp"
+#include "Util.h"
+#include "config.h"
+Buzzer buzzer(BUZZER_PIN);
 
 #include "rosserial.h"
 ros::MyNodeHandle nh;
+
+int max_speed = 500;  // deg / sec
 
 AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
 AdvServo* hips[4] = {&FL_Hip, &FR_Hip, &BL_Hip, &BR_Hip};
@@ -103,7 +105,7 @@ void callback(const open_quadruped::JointAngles& joint_angles) {
   float ja_h;
   float ja_s;
   float ja_w;
-  Serial.println("Data Received: ");
+
   for (int leg = 0; leg < 4; leg++) {
     if (leg == 0) {
       ja_h = joint_angles.fl[0];
@@ -122,6 +124,8 @@ void callback(const open_quadruped::JointAngles& joint_angles) {
       ja_s = joint_angles.br[1];
       ja_w = joint_angles.br[2];
     }
+#ifdef __DEBUG__    
+    Serial.println("Data Received: ");
     Serial.print(leg);
     Serial.print(": ");
     Serial.print(ja_h);
@@ -129,6 +133,7 @@ void callback(const open_quadruped::JointAngles& joint_angles) {
     Serial.print(ja_s);
     Serial.print(", ");
     Serial.println(ja_w);
+#endif    
     double hip_angle = util.angleConversion(leg, 0, ja_h);
     double shoulder_angle = util.angleConversion(leg, 1, ja_s);
     double wrist_angle = util.angleConversion(leg, 2, ja_w);
@@ -165,13 +170,10 @@ void setup() {
   nh.negotiateTopics();
   nh.loginfo("<started>");
   Serial.println(F("ROSserial init, done!"));
+  buzzer.beepShort();
 }
 
 void loop() {
   nh.spinOnce();
-  if (!ESTOPPED) {
-    update_servos();
-  } else {
-    detach_servos();
-  }
+  update_servos();
 }
