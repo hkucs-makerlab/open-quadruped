@@ -1,9 +1,8 @@
 #pragma once
 
 #include <ros/node_handle.h>
-#include "config.h"
 
-// ----------------------------------------------------------------------
+// -----------------------------ESP32-------------------------------------
 #ifdef ESP32
 #include <BluetoothSerial.h>
 
@@ -49,18 +48,19 @@ class Serial2Hardware {
   long baud_;
 };
 
-#define __ROS_USE_SPP_HANDLE__
+//#define __ROS_USE_SPP_HANDLE__
 #ifdef __ROS_USE_SPP_HANDLE__
 typedef NodeHandle_<BluetootSPP, 5, 5, 512, 512> MyNodeHandle;
 #else
 typedef NodeHandle_<Serial2Hardware, 5, 5, 512, 512> MyNodeHandle;
 #endif
 }  // namespace ros
-#endif // ESP32
+#endif  // ESP32
 
-// ----------------------------------------------------------------------
+// -----------------------------AVR------------------------------------
 #ifdef AVR
 #include <SoftwareSerial.h>
+#include "Config.h"
 #define SERIAL_CLASS SoftwareSerial
 namespace ros {
 class ArduinoSoftSerial {
@@ -90,4 +90,4 @@ class ArduinoSoftSerial {
 typedef NodeHandle_<ArduinoSoftSerial, 3, 3, 96, 96> MyNodeHandle;
 }  // namespace ros
 
-#endif //AVR
+#endif  // AVR

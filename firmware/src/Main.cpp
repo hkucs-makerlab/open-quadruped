@@ -5,19 +5,21 @@
 #include "AdvServo.h"
 #include "Buzzer.hpp"
 #include "Util.h"
-#include "config.h"
-Buzzer buzzer(BUZZER_PIN);
-
-#include "rosserial.h"
+#include "Config.h"
+#include "ROSserial.h"
 ros::MyNodeHandle nh;
 
 int max_speed = 500;  // deg / sec
 
-AdvServo BR_Hip, BR_Shoulder, BR_Wrist, BL_Hip, BL_Shoulder, BL_Wrist, FR_Hip, FR_Shoulder, FR_Wrist, FL_Hip, FL_Shoulder, FL_Wrist;
+AdvServo BR_Hip, BR_Shoulder, BR_Wrist,
+    BL_Hip, BL_Shoulder, BL_Wrist,
+    FR_Hip, FR_Shoulder, FR_Wrist,
+    FL_Hip, FL_Shoulder, FL_Wrist;
 AdvServo* hips[4] = {&FL_Hip, &FR_Hip, &BL_Hip, &BR_Hip};
 AdvServo* shoulders[4] = {&FL_Shoulder, &FR_Shoulder, &BL_Shoulder, &BR_Shoulder};
 AdvServo* wrists[4] = {&FL_Wrist, &FR_Wrist, &BL_Wrist, &BR_Wrist};
 Util util;
+Buzzer buzzer(BUZZER_PIN);
 
 void setLegJointIDS() {
   // HIPS
@@ -124,7 +126,7 @@ void callback(const open_quadruped::JointAngles& joint_angles) {
       ja_s = joint_angles.br[1];
       ja_w = joint_angles.br[2];
     }
-#ifdef __DEBUG__    
+#ifdef __DEBUG__
     Serial.println("Data Received: ");
     Serial.print(leg);
     Serial.print(": ");
@@ -133,7 +135,7 @@ void callback(const open_quadruped::JointAngles& joint_angles) {
     Serial.print(ja_s);
     Serial.print(", ");
     Serial.println(ja_w);
-#endif    
+#endif
     double hip_angle = util.angleConversion(leg, 0, ja_h);
     double shoulder_angle = util.angleConversion(leg, 1, ja_s);
     double wrist_angle = util.angleConversion(leg, 2, ja_w);
