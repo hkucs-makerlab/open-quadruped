@@ -1,4 +1,10 @@
+#include <Arduino.h>
+#ifdef ESP32
+#include <ESP32Servo.h>
+#endif
+#ifdef AVR
 #include <Servo.h>
+#endif
 
 class AdvServo : public Servo {
   private:

@@ -1,5 +1,8 @@
 #ifndef __BUZZER__
 #define __BUZZER__
+#ifdef ESP32
+#include <ESP32Tone.h>
+#endif
 
 class Buzzer {
   private:

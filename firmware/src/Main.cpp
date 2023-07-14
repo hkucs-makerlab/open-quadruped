@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Servo.h>
 #include <open_quadruped/JointAngles.h>
 
 #include "AdvServo.h"

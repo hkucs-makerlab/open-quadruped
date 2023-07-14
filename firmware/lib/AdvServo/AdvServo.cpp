@@ -1,6 +1,6 @@
 #include "AdvServo.h"
-#include <Arduino.h>
-#include <Servo.h>
+
+
 
 void AdvServo::init(int servo_pin, double starting_angle, double tempOffset) {
   attach(servo_pin);
